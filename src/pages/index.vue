@@ -1,7 +1,23 @@
+<script lang="ts" setup>
+import {ref} from "vue";
+
+
+
+
+</script>
+
 <template>
-  <HelloWorld />
+  <div class="background-wave"></div>
+
 </template>
 
-<script lang="ts" setup>
-  //
-</script>
+<style>
+.background-wave {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40%;
+  background: url(@/assets/wave.svg) repeat-x;
+  z-index: 0;
+}
+</style>
