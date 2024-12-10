@@ -1,5 +1,15 @@
 <script setup lang="ts">
 
+import router from "@/router";
+
+function toReviewer() {
+  router.push("/reviewer");
+}
+
+function toHome() {
+  router.push("/");
+}
+
 </script>
 
 <template>
@@ -8,13 +18,13 @@
       <v-col md="1" />
       <v-col class="header_item" md="2">
         <v-img src="../assets/favicon.png" class="icon" />
-        <p style="align-items: start;" class="h3">
+        <button style="align-items: start;" class="h3" @click="toHome">
           Dot Reviewer
-        </p>
+        </button>
       </v-col>
       <v-spacer />
       <v-col class="header_item text-large" md="2">
-        <button class="link_item"> Reviewer </button>
+        <button class="link_item" @click="toReviewer"> Reviewer </button>
         <button class="link_item"> Docs </button>
         <button class="link_item"> About </button>
       </v-col>
