@@ -8,7 +8,6 @@ function toReviewer() {
 </script>
 
 <template>
-  <div class="background-wave" />
   <div class="content-wrapper">
     <v-container style="width: 40%; height: 20vh; margin-top: -20vh">
       <v-row>

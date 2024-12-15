@@ -25,54 +25,54 @@ const sortedConfigList = computed<ConfigItem[]>(() => {
 </script>
 
 <template>
-  <div class="background-wave" />
-  <Editor class="editor"/>
-
-  <v-container class="config-wrapper">
-    <v-row>
-      <div style="display: flex">
-        <p class="h2 dark text-title">Reviewer Preset</p>
-        <button class="info-button">
-          <v-icon size="15px" icon="mdi-information-outline"/>
-        </button>
-      </div>
-      <v-divider class="divider"/>
-      <v-btn-toggle class="btn-group" v-model="preset" group color="var(--gray)">
-        <v-btn value="beginner" size="large">Beginner</v-btn>
-        <v-btn value="average" size="large">Average</v-btn>
-        <v-btn value="pro" size="large"> Pro</v-btn>
-        <v-btn value="custom" size="large">Custom</v-btn>
-      </v-btn-toggle>
-    </v-row>
-    <v-row style="margin-top: 30px">
-      <div style="display: flex">
-        <p class="h2 dark text-title">Config</p>
-        <button class="info-button">
-          <v-icon size="15px" icon="mdi-information-outline"/>
-        </button>
-      </div>
-      <v-divider class="divider"/>
-    </v-row>
-    <v-row class="config-list">
-      <transition-group style="margin-top: -60px" name="card" tag="div" move-class="card-move">
-        <ConfigCard
-          v-for="config in sortedConfigList"
-          :key="config.type"
-          :name="config.type"
-          :active="config.selected"
-          @toggle-active="config.selected = !config.selected"
-        />
-      </transition-group>
-    </v-row>
-    <v-row justify="center">
-      <v-btn color="var(--dark)" size="large">
-        <p class="h5 light">
-          <v-icon>mdi-creation-outline</v-icon>
-          Start AI Review
-        </p>
-      </v-btn>
-    </v-row>
-  </v-container>
+  <div>
+    <Editor class="editor"/>
+    <v-container class="config-wrapper">
+      <v-row>
+        <div style="display: flex">
+          <p class="h2 dark text-title">Reviewer Preset</p>
+          <button class="info-button">
+            <v-icon size="15px" icon="mdi-information-outline"/>
+          </button>
+        </div>
+        <v-divider class="divider"/>
+        <v-btn-toggle class="btn-group" v-model="preset" group color="var(--gray)">
+          <v-btn value="beginner" size="large">Beginner</v-btn>
+          <v-btn value="average" size="large">Average</v-btn>
+          <v-btn value="pro" size="large"> Pro</v-btn>
+          <v-btn value="custom" size="large">Custom</v-btn>
+        </v-btn-toggle>
+      </v-row>
+      <v-row style="margin-top: 30px">
+        <div style="display: flex">
+          <p class="h2 dark text-title">Config</p>
+          <button class="info-button">
+            <v-icon size="15px" icon="mdi-information-outline"/>
+          </button>
+        </div>
+        <v-divider class="divider"/>
+      </v-row>
+      <v-row class="config-list">
+        <transition-group style="margin-top: -60px" name="card" tag="div" move-class="card-move">
+          <ConfigCard
+            v-for="config in sortedConfigList"
+            :key="config.type"
+            :name="config.type"
+            :active="config.selected"
+            @toggle-active="config.selected = !config.selected"
+          />
+        </transition-group>
+      </v-row>
+      <v-row justify="center">
+        <v-btn color="var(--dark)" size="large">
+          <p class="h5 light">
+            <v-icon>mdi-creation-outline</v-icon>
+            Start AI Review
+          </p>
+        </v-btn>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
