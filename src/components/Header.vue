@@ -24,9 +24,9 @@ function toHome() {
       </v-col>
       <v-spacer />
       <v-col class="header_item text-large" md="2">
-        <button class="link_item" @click="toReviewer"> Reviewer </button>
-        <button class="link_item"> Docs </button>
-        <button class="link_item"> About </button>
+        <button class="link_item hover-underline" @click="toReviewer"> Reviewer </button>
+        <button class="link_item hover-underline"> Docs </button>
+        <button class="link_item hover-underline"> About </button>
       </v-col>
       <v-col md="2" />
     </v-row>

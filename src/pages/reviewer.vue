@@ -1,8 +1,26 @@
 <script setup lang="ts">
 import Editor from "@/components/Editor.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import {type ConfigItem, ConfigType} from "@/utils/types";
+import ConfigCard from "@/components/ConfigCard.vue";
 
-const preset = ref<string>("Beginner");
+const preset = ref<string>("beginner");
+
+const configList = ref<ConfigItem[]>([
+  { ind: 0, type: ConfigType.LANGUAGE, selected: true },
+  { ind: 1, type: ConfigType.STRICTNESS, selected: true },
+  { ind: 2, type: ConfigType.CODE_DESCRIPTION, selected: true },
+  { ind: 3, type: ConfigType.METRICS, selected: false},
+  { ind: 4, type: ConfigType.CUSTOM_CONFIG, selected: false}
+]);
+
+const sortedConfigList = computed<ConfigItem[]>(() => {
+  return configList.value.sort((a, b) => {
+    if (a.selected && !b.selected) return -1;
+    if (!a.selected && b.selected) return 1;
+    return a.ind - b.ind;
+  });
+});
 
 </script>
 
@@ -19,12 +37,40 @@ const preset = ref<string>("Beginner");
         </button>
       </div>
       <v-divider class="divider"/>
-      <v-btn-toggle v-model="preset" group>
-        <v-btn>Beginner</v-btn>
-        <v-btn>Average</v-btn>
-        <v-btn>Pro</v-btn>
-        <v-btn>Custom</v-btn>
+      <v-btn-toggle class="btn-group" v-model="preset" group color="var(--gray)">
+        <v-btn value="beginner" size="large">Beginner</v-btn>
+        <v-btn value="average" size="large">Average</v-btn>
+        <v-btn value="pro" size="large"> Pro</v-btn>
+        <v-btn value="custom" size="large">Custom</v-btn>
       </v-btn-toggle>
+    </v-row>
+    <v-row style="margin-top: 30px">
+      <div style="display: flex">
+        <p class="h2 dark text-title">Config</p>
+        <button class="info-button">
+          <v-icon size="15px" icon="mdi-information-outline"/>
+        </button>
+      </div>
+      <v-divider class="divider"/>
+    </v-row>
+    <v-row class="config-list">
+      <transition-group style="margin-top: -60px" name="card" tag="div" move-class="card-move">
+        <ConfigCard
+          v-for="config in sortedConfigList"
+          :key="config.type"
+          :name="config.type"
+          :active="config.selected"
+          @toggle-active="config.selected = !config.selected"
+        />
+      </transition-group>
+    </v-row>
+    <v-row justify="center">
+      <v-btn color="var(--dark)" size="large">
+        <p class="h5 light">
+          <v-icon>mdi-creation-outline</v-icon>
+          Start AI Review
+        </p>
+      </v-btn>
     </v-row>
   </v-container>
 </template>
@@ -56,5 +102,22 @@ const preset = ref<string>("Beginner");
 .divider {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.btn-group {
+  width: 100%;
+}
+.config-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  height: 500px;
+  overflow-y: scroll;
+}
+.card {
+  transition: transform 0.5s, opacity 0.5s;
+}
+.card-move {
+  transition: transform 0.5s;
 }
 </style>
