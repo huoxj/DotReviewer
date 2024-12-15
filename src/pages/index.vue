@@ -5,6 +5,10 @@ function toReviewer() {
   router.push("/reviewer");
 }
 
+function toDocs() {
+  router.push("/docs");
+}
+
 </script>
 
 <template>
@@ -26,7 +30,7 @@ function toReviewer() {
           </v-btn>
         </v-col>
         <v-col md="3">
-          <v-btn color="var(--light)" size="large">
+          <v-btn color="var(--light)" size="large" @click="toDocs">
             <p class="h5" style="font-weight: normal">Docs</p>
           </v-btn>
         </v-col>
