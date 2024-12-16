@@ -10,6 +10,14 @@ function toHome() {
   router.push("/");
 }
 
+function toDocs() {
+  router.push("/docs");
+}
+
+function toAbout() {
+  router.push("/about");
+}
+
 </script>
 
 <template>
@@ -25,8 +33,8 @@ function toHome() {
       <v-spacer />
       <v-col class="header_item text-large" md="2">
         <button class="link_item hover-underline" @click="toReviewer"> Reviewer </button>
-        <button class="link_item hover-underline"> Docs </button>
-        <button class="link_item hover-underline"> About </button>
+        <button class="link_item hover-underline" @click="toDocs"> Docs </button>
+        <button class="link_item hover-underline" @click="toAbout"> About </button>
       </v-col>
       <v-col md="2" />
     </v-row>
