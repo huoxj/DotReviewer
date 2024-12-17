@@ -1,22 +1,10 @@
 <script setup lang="ts">
 import * as monaco from "monaco-editor";
-import { ref, onMounted } from "vue";
+import {ref, onMounted, toRaw} from "vue";
 
 const editorDiv = ref<HTMLDivElement | null>(null);
-const editor = ref<monaco.editor.IStandaloneCodeEditor | null>(null);
+const editor = ref<monaco.editor.IStandaloneCodeEditor>();
 const code = ref<string>("// Type or paste your code here\n");
-
-monaco.editor.defineTheme("myTheme", {
-  base: "vs",
-  inherit: true,
-  rules: [],
-  colors: {
-    "editor.background": "#ffffff30",
-    "editor.selectionBackground": "#d4d4d4",
-    "editor.lineHighlightBackground": "#f5f5f5",
-    "editorWidget.border": "#f5f5f5",
-  }
-})
 
 onMounted(() => {
   if (editorDiv.value) {
@@ -30,8 +18,28 @@ onMounted(() => {
       automaticLayout: true,
       cursorSmoothCaretAnimation: "on",
     });
-
   }
+})
+
+const test = () => {
+  const range = new monaco.Range(1, 1, 2, 1);
+  toRaw(editor.value)?.getModel()?.deltaDecorations([], [
+    {
+      range: range,
+      options: {
+        isWholeLine: true,
+        className: "myInlineDecoration"
+      }
+    }
+  ]);
+}
+
+editor.value?.onDidChangeModel(() => {
+  code.value = toRaw(editor.value)?.getValue() || "";
+})
+
+defineExpose({
+  test
 })
 
 </script>
@@ -47,6 +55,9 @@ onMounted(() => {
   backdrop-filter: blur(5px);
 
   overflow: hidden;
+}
+.myInlineDecoration {
+  background: lightgreen;
 }
 
 </style>
