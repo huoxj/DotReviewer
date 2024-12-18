@@ -5,6 +5,7 @@ import {type ConfigItem, ConfigType} from "@/utils/types";
 import ConfigCard from "@/components/ConfigCard.vue";
 import * as ai from "@/utils/AIReview";
 import type { ReviewReply, ReviewArg } from "@/utils/AIReview";
+import router from "@/router";
 
 const preset = ref<string>("beginner");
 
@@ -44,6 +45,10 @@ const startAiReview = async () => {
     strictness: STRICT_MEDIUM,
     codeDescription: exampleDescription,
   });
+  
+// 将配置项与代码存在 sessionStorage 中，跳转过去后再取出
+const toResult = () => {
+  router.push('/result')
 };
 
 </script>
@@ -54,7 +59,7 @@ const startAiReview = async () => {
     <v-container class="config-wrapper">
       <v-row>
         <div style="display: flex">
-          <p class="h2 dark text-title">Reviewer Preset</p>
+          <p class="h2 dark text-title">Overall Presets</p>
           <button class="info-button">
             <v-icon size="15px" icon="mdi-information-outline"/>
           </button>
@@ -88,7 +93,7 @@ const startAiReview = async () => {
         </transition-group>
       </v-row>
       <v-row justify="center">
-        <v-btn color="var(--dark)" size="large" @click="startAiReview">
+        <v-btn color="var(--dark)" size="large" @click="toResult">
           <p class="h5 light">
             <v-icon>mdi-creation-outline</v-icon>
             Start AI Review
@@ -100,14 +105,7 @@ const startAiReview = async () => {
 </template>
 
 <style scoped>
-.editor {
-  position: absolute;
-  top: 50%;
-  left: 2%;
-  transform: translate(0, -46%);
-  width: 58%;
-  height: 88vh;
-}
+
 .config-wrapper {
   position: absolute;
   top: 50%;
