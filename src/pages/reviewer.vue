@@ -45,7 +45,8 @@ const startAiReview = async () => {
     strictness: STRICT_MEDIUM,
     codeDescription: exampleDescription,
   });
-  
+}
+
 // 将配置项与代码存在 sessionStorage 中，跳转过去后再取出
 const toResult = () => {
   router.push('/result')
