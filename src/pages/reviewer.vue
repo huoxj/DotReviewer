@@ -3,6 +3,8 @@ import Editor from "@/components/Editor.vue";
 import {computed, ref} from "vue";
 import {type ConfigItem, ConfigType} from "@/utils/types";
 import ConfigCard from "@/components/ConfigCard.vue";
+import * as ai from "@/utils/AIReview";
+import type { ReviewReply, ReviewArg } from "@/utils/AIReview";
 
 const preset = ref<string>("beginner");
 
@@ -21,6 +23,28 @@ const sortedConfigList = computed<ConfigItem[]>(() => {
     return a.ind - b.ind;
   });
 });
+
+const metricsArray: ai.Metrics[] = [ai.Metrics.Correctness, ai.Metrics.Efficiency, ai.Metrics.Readability];
+const STRICT_LOW = ai.Strictness.Low;
+const STRICT_MEDIUM = ai.Strictness.Medium;
+const STRICT_HIGH = ai.Strictness.High;
+const exampleCode = `function a(n) {
+  if (n == 0) return n;
+  if (n == 1) return n;
+  return a(n - 1) + a(n - 2);
+}`;
+const exampleDescription = `This function calculates the nth Fibonacci number using recursion.`;
+
+const startAiReview = async () => {
+  console.log("AI Review started");
+  let reviewReplies: ReviewReply[];
+  reviewReplies = await ai.reviewCode({
+    code: exampleCode,
+    metrics: metricsArray,
+    strictness: STRICT_MEDIUM,
+    codeDescription: exampleDescription,
+  });
+};
 
 </script>
 
@@ -64,7 +88,7 @@ const sortedConfigList = computed<ConfigItem[]>(() => {
         </transition-group>
       </v-row>
       <v-row justify="center">
-        <v-btn color="var(--dark)" size="large">
+        <v-btn color="var(--dark)" size="large" @click="startAiReview">
           <p class="h5 light">
             <v-icon>mdi-creation-outline</v-icon>
             Start AI Review
