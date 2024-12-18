@@ -14,7 +14,9 @@
     "@mdi/font": "7.4.47",
     "core-js": "^3.37.1",
     "monaco-editor": "^0.52.0",
+    "openai": "^4.76.3",
     "roboto-fontface": "*",
+    "ts-node": "^10.9.2",
     "vue": "^3.4.31",
     "vuetify": "^3.6.14"
   },

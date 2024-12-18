@@ -3,6 +3,8 @@ import Editor from "@/components/Editor.vue";
 import {computed, ref} from "vue";
 import {type ConfigItem, ConfigType} from "@/utils/types";
 import ConfigCard from "@/components/ConfigCard.vue";
+import * as ai from "@/utils/AIReview";
+import type { ReviewReply, ReviewArg } from "@/utils/AIReview";
 import router from "@/router";
 
 const preset = ref<string>("beginner");
@@ -23,6 +25,27 @@ const sortedConfigList = computed<ConfigItem[]>(() => {
   });
 });
 
+const metricsArray: ai.Metrics[] = [ai.Metrics.Correctness, ai.Metrics.Efficiency, ai.Metrics.Readability];
+const STRICT_LOW = ai.Strictness.Low;
+const STRICT_MEDIUM = ai.Strictness.Medium;
+const STRICT_HIGH = ai.Strictness.High;
+const exampleCode = `function a(n) {
+  if (n == 0) return n;
+  if (n == 1) return n;
+  return a(n - 1) + a(n - 2);
+}`;
+const exampleDescription = `This function calculates the nth Fibonacci number using recursion.`;
+
+const startAiReview = async () => {
+  console.log("AI Review started");
+  let reviewReplies: ReviewReply[];
+  reviewReplies = await ai.reviewCode({
+    code: exampleCode,
+    metrics: metricsArray,
+    strictness: STRICT_MEDIUM,
+    codeDescription: exampleDescription,
+  });
+  
 // 将配置项与代码存在 sessionStorage 中，跳转过去后再取出
 const toResult = () => {
   router.push('/result')
