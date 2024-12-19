@@ -2,6 +2,8 @@
 import Editor from "@/components/Editor.vue";
 import {ref} from "vue";
 import ResultItem from "@/components/ResultItem.vue";
+import {type ReviewReply} from "@/utils/AIReview";
+import * as ai from "@/utils/AIReview";
 
 const editor = ref();
 
@@ -23,7 +25,7 @@ function test_insert() {
         <ResultItem v-for="item in [1, 2, 3, 4, 5]" key="item"/>
       </v-row>
     </v-container>
-    <v-btn class="continue-wrapper">
+    <v-btn class="continue-wrapper" @click="test_insert">
       <p>Continue Review</p>
       <v-icon size="24px" icon="mdi-chevron-right"/>
     </v-btn>

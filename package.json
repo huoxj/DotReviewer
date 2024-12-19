@@ -13,7 +13,7 @@
   "dependencies": {
     "@mdi/font": "7.4.47",
     "core-js": "^3.37.1",
-    "monaco-editor": "^0.52.0",
+    "monaco-editor": "^0.27.0",
     "openai": "^4.76.3",
     "roboto-fontface": "*",
     "ts-node": "^10.9.2",

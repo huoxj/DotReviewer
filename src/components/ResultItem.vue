@@ -61,7 +61,6 @@ const fix_code = ref<string>("void find_max(int arr[3][3], int rows, int cols, i
   justify-content: space-between;
   align-items: center;
   padding-left: 20px;
-  padding-right: 20px;
 
   width: 200px;
 

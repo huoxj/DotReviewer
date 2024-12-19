@@ -1,6 +1,7 @@
 import Reviewer from '@/pages/reviewer.vue';
 import {OpenAI} from 'openai'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
+import {constructConfigJson} from "@/utils/configParser";
 
 export enum Metrics {
   Readability = "readability",
@@ -18,9 +19,11 @@ export enum Strictness {
 
 export interface ReviewArg {
   code: string;
-  strictness: Strictness;
-  metrics: Metrics[];
+  strictness?: Strictness;
+  metrics?: Metrics[];
   codeDescription?: string;
+  language?: string;
+  customConfig?: string;
 }
 
 export interface ReviewReply {
@@ -123,7 +126,8 @@ async function callOpenAI(): Promise<ReviewReply[]> {
   }
 }
 
-export async function reviewCode(arg: ReviewArg): Promise<ReviewReply[]> {
+export async function reviewCode(): Promise<ReviewReply[]> {
+  let arg: ReviewArg = constructConfigJson();
   const request = constructRequest(arg);
   messages.push({
     role: "user",

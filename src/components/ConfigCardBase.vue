@@ -15,12 +15,10 @@ const configName = ref(props.name)
 const info = ref(props.info)
 const hasInfo = ref(props.info !== undefined)
 const isRow = ref(props.isRow)
-const active = ref(props.active)
 
-const getInActive = computed(() => active.value ? 'card-active' : 'card-inactive')
+const getInActive = computed(() => props.active ? 'card-active' : 'card-inactive')
 
 function toggleActive() {
-  active.value = !active.value
   emit('toggleActive')
 }
 
