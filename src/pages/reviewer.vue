@@ -96,13 +96,17 @@ const toResult = () => {
 }
 .btn-group {
   width: 100%;
+  border-radius: 8px;
+}
+.btn-group .v-btn {
+  border-radius: 8px;
 }
 .config-list {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 
-  height: 500px;
+  height: 64%;
   overflow-y: scroll;
 
   margin-bottom: 20px;
