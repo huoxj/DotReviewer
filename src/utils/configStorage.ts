@@ -36,8 +36,8 @@ export function switchPresetBeginner () {
   customConfig.value = "";
   configList.value = [
     { ind: 0, type: ConfigType.LANGUAGE, selected: true },
-    { ind: 1, type: ConfigType.STRICTNESS, selected: true },
-    { ind: 2, type: ConfigType.METRICS, selected: true},
+    { ind: 1, type: ConfigType.METRICS, selected: true},
+    { ind: 2, type: ConfigType.STRICTNESS, selected: false },
     { ind: 3, type: ConfigType.CODE_DESCRIPTION, selected: false },
     { ind: 4, type: ConfigType.CUSTOM_CONFIG, selected: false}
   ];
@@ -70,9 +70,9 @@ export function switchPresetPro () {
   customConfig.value = "";
   configList.value = [
     { ind: 0, type: ConfigType.LANGUAGE, selected: true },
-    { ind: 1, type: ConfigType.STRICTNESS, selected: true },
-    { ind: 2, type: ConfigType.CODE_DESCRIPTION, selected: true },
-    { ind: 3, type: ConfigType.METRICS, selected: true},
+    { ind: 1, type: ConfigType.CODE_DESCRIPTION, selected: true },
+    { ind: 2, type: ConfigType.METRICS, selected: true},
+    { ind: 3, type: ConfigType.STRICTNESS, selected: true },
     { ind: 4, type: ConfigType.CUSTOM_CONFIG, selected: true}
   ];
   changedToPreset = true;

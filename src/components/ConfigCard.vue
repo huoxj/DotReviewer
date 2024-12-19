@@ -74,6 +74,7 @@ const num2Emoji = (num: number) => emojiList[Math.floor(num * 3)]
         :auto-grow="true"
         rows="1"
         v-model="codeDescription"
+        placeholder="Briefly describe function of the code."
       />
     </ConfigCardBase>
     <ConfigCardBase
@@ -84,41 +85,41 @@ const num2Emoji = (num: number) => emojiList[Math.floor(num * 3)]
       :active="props.active"
       info="Select the metrics you want to include in the code review."
     >
-      <div style="width: 100%; display: flex; flex-direction: column; justify-content: flex-start">
+      <div class="checkbox-wrapper">
         <v-checkbox
           v-model="metrics"
-          label="Readability"
+          label="📖Readability"
           value="readability"
           :disabled="!props.active"
-          style="height: 50px"
+          class="checkbox text-small"
         />
         <v-checkbox
           v-model="metrics"
-          label="Correctness"
+          label="✔️Correctness"
           value="correctness"
           :disabled="!props.active"
-          style="height: 50px"
+          class="checkbox text-small"
         />
         <v-checkbox
           v-model="metrics"
-          label="Efficiency"
+          label="📈Efficiency"
           value="efficiency"
           :disabled="!props.active"
-          style="height: 50px"
+          class="checkbox text-small"
         />
         <v-checkbox
           v-model="metrics"
-          label="Maintainability"
+          label="🛠️Maintainability"
           value="maintainability"
           :disabled="!props.active"
-          style="height: 50px"
+          class="checkbox text-small"
         />
         <v-checkbox
           v-model="metrics"
-          label="Security"
+          label="🛡️Security"
           value="security"
           :disabled="!props.active"
-          style="height: 50px"
+          class="checkbox text-small"
         />
       </div>
     </ConfigCardBase>
@@ -136,11 +137,23 @@ const num2Emoji = (num: number) => emojiList[Math.floor(num * 3)]
         :auto-grow="true"
         rows="1"
         v-model="customConfig"
+        placeholder="Enter custom configuration in natural language."
       />
     </ConfigCardBase>
   </div>
 </template>
 
 <style scoped>
-
+.checkbox-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.checkbox {
+  width: 50%;
+  height: 45px;
+}
 </style>
