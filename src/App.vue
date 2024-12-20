@@ -1,15 +1,16 @@
 <template>
   <v-app>
-    <v-main>
-      <Header></Header>
+    <Header></Header>
+    <v-main style="z-index: 1; height: 92vh; margin-top: 8vh">
+      <router-view v-slot:="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component"/>
+        </transition>
+      </router-view>
     </v-main>
   </v-app>
   <div class="background-wave" />
-  <router-view v-slot:="{ Component }">
-    <transition name="fade" mode="out-in">
-      <component :is="Component"/>
-    </transition>
-  </router-view>
+
 </template>
 
 <script lang="ts" setup>

@@ -34,22 +34,10 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="editorDiv" class="editor"/>
+  <div ref="editorDiv" class="editor-style-big"/>
 </template>
 
 <style scoped>
-.editor {
-  border-radius: 30px;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-
-  overflow: hidden;
-
-  border-style: solid;
-  border-width: 1px;
-  border-color: var(--gray);
-
-}
 .myInlineDecoration {
   background: lightgreen;
 }

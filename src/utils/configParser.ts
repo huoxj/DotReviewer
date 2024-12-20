@@ -1,5 +1,5 @@
-import type {ReviewArg} from "@/utils/AIReview";
-import {Metrics, Strictness} from "@/utils/AIReview";
+import type {ReviewArg} from "@/utils/types";
+import {Metrics, Strictness} from "@/utils/types";
 import type {ConfigItem} from "@/utils/types";
 import {ConfigType} from "@/utils/types";
 

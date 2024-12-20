@@ -6,6 +6,7 @@ import ConfigCard from "@/components/ConfigCard.vue";
 import {constructConfigJson} from "@/utils/configParser";
 import {configList, preset, switchPresetAverage, switchPresetBeginner, switchPresetPro} from "@/utils/configStorage";
 import router from "@/router";
+import {reviewCode} from "@/utils/AIReview";
 
 const sortedConfigList = computed<ConfigItem[]>(() => {
   return configList.value.sort((a, b) => {
@@ -18,13 +19,16 @@ const sortedConfigList = computed<ConfigItem[]>(() => {
 const toResult = () => {
   //console.log(constructConfigJson())
   router.push('/result')
+  // reviewCode().then(res => {
+  //   console.log(res)
+  // })
 };
 
 </script>
 
 <template>
   <div>
-    <Editor class="editor"/>
+    <Editor class="editor-base"/>
     <v-container class="config-wrapper">
       <v-row>
         <div style="display: flex">

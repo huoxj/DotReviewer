@@ -7,11 +7,23 @@
   z-index: 0;
 }
 
-.editor {
+.editor-base {
   position: absolute;
   top: 50%;
   left: 2%;
   transform: translate(0, -46%);
   width: 58%;
   height: 88vh;
+}
+
+.editor-style-big {
+  border-radius: 30px;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
+
+  overflow: hidden;
+
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--gray);
+
 }

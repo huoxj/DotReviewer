@@ -11,3 +11,36 @@ export type ConfigItem = {
   type: ConfigType;
   selected: boolean;
 }
+
+export enum Metrics {
+  Readability = "readability",
+  Efficiency = "efficiency",
+  Maintainability = "maintainability",
+  Correctness = "correctness",
+  Security = "security",
+}
+
+export enum Strictness {
+  Low = "low",
+  Medium = "medium",
+  High = "high",
+}
+
+export interface ReviewArg {
+  code: string;
+  strictness?: Strictness;
+  metrics?: Metrics[];
+  codeDescription?: string;
+  language?: string;
+  customConfig?: string;
+}
+
+export interface ReviewReply {
+  problemIcon?: string;
+  problemTitle: string;
+  problemDesc: string;
+  lineBegin: number;
+  lineEnd: number;
+  fixedCode: string;
+  valid?: boolean;
+}

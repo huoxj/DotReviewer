@@ -2,38 +2,8 @@ import Reviewer from '@/pages/reviewer.vue';
 import {OpenAI} from 'openai'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import {constructConfigJson} from "@/utils/configParser";
+import type {ReviewArg, ReviewReply} from "@/utils/types";
 
-export enum Metrics {
-  Readability = "readability",
-  Efficiency = "efficiency",
-  Maintainability = "maintainability",
-  Correctness = "correctness",
-  Security = "security",
-}
-
-export enum Strictness {
-  Low = "low",
-  Medium = "medium",
-  High = "high",
-}
-
-export interface ReviewArg {
-  code: string;
-  strictness?: Strictness;
-  metrics?: Metrics[];
-  codeDescription?: string;
-  language?: string;
-  customConfig?: string;
-}
-
-export interface ReviewReply {
-  problemTitle: string;
-  problemDesc: string;
-  lineBegin: number;
-  lineEnd: number;
-  fixedCode: string;
-  valid?: boolean;
-}
 
 const OPENAI_API = "NOT_A_REAL_API_KEY"
 const LOCAL_URL = "http://localhost:8000/v1"
@@ -127,7 +97,10 @@ async function callOpenAI(): Promise<ReviewReply[]> {
 }
 
 export async function reviewCode(): Promise<ReviewReply[]> {
-  let arg: ReviewArg = constructConfigJson();
+  // let arg: ReviewArg = constructConfigJson();
+  let arg: ReviewArg = {
+    code: "int fib(int n) {\n  if (n <= 1) return n;\n  return fib(n-1) + fib(n-2);\n}",
+  }
   const request = constructRequest(arg);
   messages.push({
     role: "user",
