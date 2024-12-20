@@ -19,32 +19,57 @@ const openai = new OpenAI({
   apiKey: GROQ_API
 })
 
+const schema = {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "problemIcon": {
+         "type": "string",
+         "description": "material design icon name like 'mdi-repeat-off'"
+        },
+      "problemTitle": { "type": "string" },
+      "problemDesc": { "type": "string" },
+      "lineBegin": { "type": "integer" },
+      "lineEnd": { "type": "integer" },
+      "language": { "type": "string" },
+      "fixedCode": {
+        "type": "string",
+        "description": "The fixed code snippet **between lineBegin and lineEnd**, please include line breaks in the code."
+      }
+    },
+    "required": [
+      "id",
+      "problemIcon",
+      "problemTitle",
+      "problemDesc",
+      "lineBegin",
+      "lineEnd",
+      "language",
+      "fixedCode"
+    ]
+}
+
+
 const messages: Array<ChatCompletionMessageParam> = [
   {
     role: "system",
     content: `You are a highly skilled code reviewer with expertise in multiple programming languages and software engineering best practices.
     Your task is to review code based on the strictness level I provide, considering the following evaluation criteria:
-    1. Code readability and clarity: Is the code easy to understand and well-organized?
-    2. Code efficiency: Does the code run efficiently in terms of time and space complexity?
-    3. Maintainability: Is the code structured in a way that makes it easy to update and extend?
-    4. Correctness: Does the code fulfill the described functionality correctly?
-    5. Security: Does the code follow best practices to prevent security vulnerabilities?
-    Only consider the metrics I specify and provide feedback based on the strictness level I set.
+    1. Code readability and clarity
+    2. Code efficiency
+    3. Maintainability
+    4. Correctness
+    5. Security
+    Only consider the metrics I specify, the default metrics are readability, efficiency, and maintainability.
 
-    Please review the code,
-    Your feedback **should be** in the following **JSON** format:
+    Your feedback should contain follow schema in a json array which enclosed by '[]' and **make sure** there is not extra message in the response.
+    ${JSON.stringify(schema, null, 2)}
+    Your suggestions should be based on the code functionality description I will provide, and the feedback should adjust according to the strictness level I specify and the default strictness level is medium.
 
-    [
-      {
-        "problem_title": "Brief description of the problem or suggestion",
-        "problem_description": "Detailed Description of the problem or suggestion",
-        "line_begin": number,
-        "line_end": number,
-        "fixed_code": "The code after applying the fix or improvement"
-      }
-    ]
-
-    Your suggestions should be based on the code functionality description I will provide, and the feedback should adjust according to the strictness level I specify.
+    **Make sure the lines of code should not intersect with each other. This is very important**
     `
   },
 ];
@@ -57,12 +82,14 @@ const constructRequest = (arg: ReviewArg): string => {
 async function callOpenAI(): Promise<ReviewReply[]> {
   Reviewer
   let errorResponse: ReviewReply = {
+    id: 0,
+    problemIcon: "",
     problemTitle: "Error",
     problemDesc: "An error occurred while processing the request.",
     lineBegin: 0,
     lineEnd: 0,
     fixedCode: "",
-    valid: false
+    valid: false,
   }
   let errorReplies: ReviewReply[] = [];
   errorReplies.push(errorResponse);
@@ -99,10 +126,11 @@ async function callOpenAI(): Promise<ReviewReply[]> {
 }
 
 export async function reviewCode(): Promise<ReviewReply[]> {
-  // let arg: ReviewArg = constructConfigJson();
-  let arg: ReviewArg = {
-    code: "int fib(int n) {\n  if (n <= 1) return n;\n  return fib(n-1) + fib(n-2);\n}",
-  }
+  let arg: ReviewArg = constructConfigJson();
+  // let arg: ReviewArg = {
+  //   code: "int fib(int n) {\n  if (n <= 1) return n;\n  return fib(n-1) + fib(n-2);\n}",
+  // }
+  console.log(arg);
   const request = constructRequest(arg);
   messages.push({
     role: "user",
