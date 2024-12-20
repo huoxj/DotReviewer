@@ -3,10 +3,8 @@ import Editor from "@/components/Editor.vue";
 import {computed, ref, watch} from "vue";
 import {type ConfigItem, ConfigType} from "@/utils/types";
 import ConfigCard from "@/components/ConfigCard.vue";
-import {constructConfigJson} from "@/utils/configParser";
 import {configList, preset, switchPresetAverage, switchPresetBeginner, switchPresetPro} from "@/utils/configStorage";
 import router from "@/router";
-import {reviewCode} from "@/utils/AIReview";
 
 const sortedConfigList = computed<ConfigItem[]>(() => {
   return configList.value.sort((a, b) => {
@@ -16,19 +14,22 @@ const sortedConfigList = computed<ConfigItem[]>(() => {
   });
 });
 
+const editor = ref();
+
+const changeLanguage = (language: string) => {
+  console.log(language);
+  editor.value.setLanguage(language);
+};
+
 const toResult = () => {
-  //console.log(constructConfigJson())
-  router.push('/result')
-  // reviewCode().then(res => {
-  //   console.log(res)
-  // })
+  router.push('/loading')
 };
 
 </script>
 
 <template>
   <div>
-    <Editor class="editor-base"/>
+    <Editor class="editor-base" ref="editor"/>
     <v-container class="config-wrapper">
       <v-row>
         <div style="display: flex">
@@ -62,6 +63,7 @@ const toResult = () => {
             :name="config.type"
             :active="config.selected"
             @toggle-active="config.selected = !config.selected"
+            @change-language="changeLanguage"
           />
         </transition-group>
       </v-row>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import * as monaco from "monaco-editor";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, toRaw} from "vue";
 
 const props = defineProps({
   code: String,
@@ -26,13 +26,28 @@ onMounted(() => {
         enabled: false
       },
       automaticLayout: true,
-      readOnly: true,
-      scrollbar: {
-        handleMouseWheel: false
-      }
+      readOnly: true
     });
   }
 })
+
+function setCode(newCode: string) {
+  if (editor.value) {
+    toRaw(editor.value).setValue(newCode);
+  }
+}
+
+function setLanguage(language: string) {
+  if (editor.value) {
+    monaco.editor.setModelLanguage(toRaw(editor.value).getModel()!, language);
+  }
+}
+
+defineExpose({
+  setCode,
+  setLanguage
+})
+
 
 </script>
 

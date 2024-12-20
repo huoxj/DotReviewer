@@ -12,11 +12,17 @@ const props = defineProps({
 
 const configType = ref<ConfigType>(props.name as ConfigType)
 
-const emit = defineEmits(['toggleActive'])
+const emit = defineEmits(['toggleActive', 'changeLanguage'])
 
 function toggleActive() {
   emit('toggleActive')
 }
+
+watch(language, (newVal) => {
+  if (configType.value == ConfigType.LANGUAGE) {
+    emit('changeLanguage', newVal)
+  }
+})
 
 const emojiList = ['😄', '😐', '😇']
 const num2Emoji = (num: number) => emojiList[Math.floor(num * 3)]

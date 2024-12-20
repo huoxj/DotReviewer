@@ -3,15 +3,17 @@ import * as monaco from "monaco-editor";
 import {ref, onMounted, toRaw, watch} from "vue";
 import {tr} from "vuetify/locale";
 
+const props = defineProps({
+  code: String
+});
+
 const editorDiv = ref<HTMLDivElement | null>(null);
 const editor = ref<monaco.editor.IStandaloneCodeEditor>();
-const code = ref<string>(sessionStorage.getItem("code") || "// Write your code here");
 
 onMounted(() => {
-  if(!sessionStorage.getItem("code")) sessionStorage.setItem("code", code.value);
   if (editorDiv.value) {
     editor.value = monaco.editor.create(editorDiv.value, {
-      value: code.value,
+      value: props.code,
       fontSize: 24,
       theme: "myTheme",
       minimap: {
@@ -19,10 +21,6 @@ onMounted(() => {
       },
       automaticLayout: true,
       cursorSmoothCaretAnimation: true,
-    });
-    editor.value.onDidChangeModelContent(() => {
-      code.value = toRaw(editor.value)?.getValue() || "";
-      sessionStorage.setItem("code", code.value);
     });
   }
 })
@@ -34,15 +32,17 @@ function setCode(newCode: string) {
 }
 
 function setLanguage(language: string) {
-  if(language == "C++") language = "cpp";
-  language = language.toLowerCase();
+  console.log(language);
   if (editor.value) {
     monaco.editor.setModelLanguage(toRaw(editor.value).getModel()!, language);
   }
 }
 
 function getCode(): string {
-  return code.value;
+  if (editor.value) {
+    return toRaw(editor.value).getValue();
+  }
+  return "";
 }
 
 defineExpose({

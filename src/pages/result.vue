@@ -1,44 +1,41 @@
 <script setup lang="ts">
-import Editor from "@/components/Editor.vue";
-import {ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import CodeBlock from "@/components/CodeBlock.vue";
 import type {ReviewReply} from "@/utils/types";
+import {PH_code, PH_reply} from "@/utils/placeholders";
+import FixEditor from "@/components/FixEditor.vue";
 
 const editor_view = ref();
 const editor_fix = ref();
 
-function test_insert() {
-  editor_fix.value.test()
+const reviewResult = ref<ReviewReply[]>([])
+const currentProblem = ref<ReviewReply[]>([])
+const codeRaw = sessionStorage.getItem("code") || PH_code;
+
+reviewResult.value = sessionStorage.getItem("result") ? JSON.parse(sessionStorage.getItem("result")!) : PH_reply;
+currentProblem.value = [reviewResult.value[0]]
+
+function initEditorCode() {
+  editor_view.value.setCode(codeRaw);
+  editor_view.value.setLanguage(currentProblem.value[0].language);
+  editor_fix.value.setCode(currentProblem.value[0].fixedCode);
+  editor_fix.value.setLanguage(currentProblem.value[0].language);
 }
 
-const reviewResult = ref<ReviewReply[]>([
-  {
-    problemIcon: "mdi-repeat-off",
-    problemTitle: "Inefficient Recursive Approach",
-    problemDesc: "The current implementation of the Fibonacci function uses a recursive approach, which is not efficient for large inputs due to the repeated computation of the same sub-problems. This can be improved using dynamic programming techniques.",
-    lineBegin: 1,
-    lineEnd: 4,
-    fixedCode: "int fib(int n) {\n  int dp[n+1];\n  dp[0] = 0;\n  dp[1] = 1;\n  for (int i = 2; i <= n; i++) {\n    dp[i] = dp[i-1] + dp[i-2];\n  }\n  return dp[n];\n}"
-  },
-  {
-    problemIcon: "mdi-head-check-outline",
-    problemTitle: "Lack of Input Validation",
-    problemDesc: "The function does not validate its input. It assumes that the input will always be a non-negative integer. However, it does not handle cases where the input is a negative integer or a non-integer value. This could lead to incorrect results or crashes.",
-    lineBegin: 1,
-    lineEnd: 1,
-    fixedCode: "int fib(int n) {\n  if (n < 0) {\n    // Handle negative input, e.g., throw an exception\n    throw std::invalid_argument(\"Input must be a non-negative integer.\");\n  }\n  // ... rest of the function\n}"
-  },
-  {
-    problemIcon: "mdi-stack-overflow",
-    problemTitle: "Potential Integer Overflow",
-    problemDesc: "For large inputs, the function may cause an integer overflow when calculating the Fibonacci number. This could result in incorrect results.",
-    lineBegin: 1,
-    lineEnd: 4,
-    fixedCode: "long long fib(int n) {\n  // Use a larger data type to reduce the chance of overflow\n  long long dp[n+1];\n  dp[0] = 0;\n  dp[1] = 1;\n  for (int i = 2; i <= n; i++) {\n    if (dp[i-1] > LLONG_MAX - dp[i-2]) {\n      // Handle potential overflow\n      throw std::overflow_error(\"Fibonacci number exceeds the maximum limit.\");\n    }\n    dp[i] = dp[i-1] + dp[i-2];\n  }\n  return dp[n];\n}"
-  }
-])
-
-const currentProblem = ref<ReviewReply[]>([reviewResult.value[0]])
+onMounted(() => {
+  console.log(reviewResult.value)
+  initEditorCode();
+  watch(currentProblem, () => {
+    if (editor_view.value) {
+      editor_view.value.setCode(codeRaw);
+      editor_view.value.setLanguage(currentProblem.value[0].language);
+    }
+    if (editor_fix.value) {
+      editor_fix.value.setCode(currentProblem.value[0].fixedCode);
+      editor_fix.value.setLanguage(currentProblem.value[0].language);
+    }
+  })
+})
 
 </script>
 
@@ -55,14 +52,14 @@ const currentProblem = ref<ReviewReply[]>([reviewResult.value[0]])
       >
         <v-list-item
           v-for="item in reviewResult"
-          :key="item.problemTitle"
+          :key="item.id"
           :value="item"
           height="60px"
           rounded="xl"
           lines="two"
         >
           <template v-slot:prepend>
-            <v-icon size="30px">{{item.problemIcon}}</v-icon>
+            <v-icon size="28px">{{item.problemIcon}}</v-icon>
           </template>
           <template v-slot:title>
             {{item.problemTitle}}
@@ -106,16 +103,16 @@ const currentProblem = ref<ReviewReply[]>([reviewResult.value[0]])
       <v-divider thickness="5px" />
 
       <div class="editor-fix">
-        <Editor style="height: 100%" ref="editor-fix"/>
+        <FixEditor style="height: 100%" ref="editor_fix"/>
       </div>
     </div>
 
     <div class="preview-wrapper">
       <p class="h3 dark" style="height: 4vh">Preview✨</p>
-      <CodeBlock style="height: 84vh" class="editor-view" ref="editor-view"/>
+      <CodeBlock style="height: 84vh" class="editor-view" ref="editor_view"/>
     </div>
 
-    <v-btn class="continue-wrapper" @click="test_insert">
+    <v-btn class="continue-wrapper" @click="">
       <p>Continue Review</p>
       <v-icon size="24px" icon="mdi-chevron-right"/>
     </v-btn>
@@ -155,15 +152,6 @@ const currentProblem = ref<ReviewReply[]>([reviewResult.value[0]])
   border-radius: 15px;
   backdrop-filter: blur(10px);
 }
-.problem-item {
-  height: 70px;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-}
-
 .left-wrapper {
   position: absolute;
   top: 10vh;

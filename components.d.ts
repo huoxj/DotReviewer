@@ -11,6 +11,7 @@ declare module 'vue' {
     ConfigCard: typeof import('./src/components/ConfigCard.vue')['default']
     ConfigCardBase: typeof import('./src/components/ConfigCardBase.vue')['default']
     Editor: typeof import('./src/components/Editor.vue')['default']
+    FixEditor: typeof import('./src/components/FixEditor.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     ResultItem: typeof import('./src/components/ResultItem.vue')['default']

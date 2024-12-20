@@ -36,11 +36,13 @@ export interface ReviewArg {
 }
 
 export interface ReviewReply {
+  id: number;
   problemIcon?: string;
   problemTitle: string;
   problemDesc: string;
   lineBegin: number;
   lineEnd: number;
+  language?: string;
   fixedCode: string;
   valid?: boolean;
 }

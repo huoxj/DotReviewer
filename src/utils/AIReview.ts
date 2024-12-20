@@ -3,6 +3,8 @@ import {OpenAI} from 'openai'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import {constructConfigJson} from "@/utils/configParser";
 import type {ReviewArg, ReviewReply} from "@/utils/types";
+import {sleep} from "openai/core";
+import {PH_reply} from "@/utils/placeholders";
 
 
 const OPENAI_API = "NOT_A_REAL_API_KEY"
@@ -114,3 +116,7 @@ export async function reviewCode(): Promise<ReviewReply[]> {
   return result;
 }
 
+export async function mockReviewCode(): Promise<ReviewReply[]> {
+  await sleep(2000);
+  return PH_reply;
+}
