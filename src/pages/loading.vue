@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {mockReviewCode} from "@/utils/AIReview";
+import {mockReviewCode, reviewCode} from "@/utils/AIReview";
 import router from "@/router";
 
 const loadingPeriod = ref<String>("");
@@ -13,7 +13,7 @@ const loadingInterval = setInterval(() => {
 }, 500);
 
 sessionStorage.removeItem("result");
-mockReviewCode().then(res => {
+reviewCode().then(res => {
   sessionStorage.setItem("result", JSON.stringify(res));
   clearInterval(loadingInterval);
   router.push("/result");

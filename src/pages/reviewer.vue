@@ -5,6 +5,8 @@ import {type ConfigItem, ConfigType} from "@/utils/types";
 import ConfigCard from "@/components/ConfigCard.vue";
 import {configList, preset, switchPresetAverage, switchPresetBeginner, switchPresetPro} from "@/utils/configStorage";
 import router from "@/router";
+import { constructConfigJson } from "@/utils/configParser";
+import { reviewCode } from "@/utils/AIReview";
 
 const sortedConfigList = computed<ConfigItem[]>(() => {
   return configList.value.sort((a, b) => {
@@ -21,7 +23,7 @@ const changeLanguage = (language: string) => {
   editor.value.setLanguage(language);
 };
 
-const toResult = () => {
+const toResult = async () => {
   router.push('/loading')
 };
 
