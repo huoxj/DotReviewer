@@ -3,39 +3,65 @@ import {onMounted, ref, watch} from "vue";
 import CodeBlock from "@/components/CodeBlock.vue";
 import type {ReviewReply} from "@/utils/types";
 import {PH_code, PH_reply} from "@/utils/placeholders";
-import FixEditor from "@/components/FixEditor.vue";
+import Editor from "@/components/Editor.vue";
+import DiffEditor from "@/components/DiffEditor.vue";
+import {sleep} from "openai/core";
+import router from "@/router";
 
 const editor_view = ref();
 const editor_fix = ref();
+const editor_diff = ref();
 
 const reviewResult = ref<ReviewReply[]>([])
 const currentProblem = ref<ReviewReply[]>([])
 const codeRaw = sessionStorage.getItem("code") || PH_code;
+const codeRawSplit = codeRaw.split("\n");
 
 reviewResult.value = sessionStorage.getItem("result") ? JSON.parse(sessionStorage.getItem("result")!) : PH_reply;
 currentProblem.value = [reviewResult.value[0]]
 
 function initEditorCode() {
-  editor_view.value.setCode(codeRaw);
+  editor_view.value.setCode(currentProblem.value[0].fixedCode);
   editor_view.value.setLanguage(currentProblem.value[0].language);
-  editor_fix.value.setCode(currentProblem.value[0].fixedCode);
+  editor_fix.value.setCode(codeRaw);
   editor_fix.value.setLanguage(currentProblem.value[0].language);
 }
 
+const viewMode = ref(1);
+
 onMounted(() => {
-  console.log(reviewResult.value)
   initEditorCode();
   watch(currentProblem, () => {
-    if (editor_view.value) {
-      editor_view.value.setCode(codeRaw);
-      editor_view.value.setLanguage(currentProblem.value[0].language);
+    if (viewMode.value != 2 && editor_view.value) {
+      editor_view.value.setCode(currentProblem.value[0].fixedCode);
     }
-    if (editor_fix.value) {
-      editor_fix.value.setCode(currentProblem.value[0].fixedCode);
-      editor_fix.value.setLanguage(currentProblem.value[0].language);
+    if (viewMode.value == 2 && editor_diff.value) {
+      editor_diff.value.setCode(getOriginalCode(), currentProblem.value[0].fixedCode);
     }
   })
 })
+
+function getOriginalCode() {
+  return codeRawSplit.slice(currentProblem.value[0].lineBegin - 1, currentProblem.value[0].lineEnd).join("\n");
+}
+
+async function switchToOriginal() {
+  viewMode.value = 0;
+  await sleep(100);
+  editor_view.value.setCode(getOriginalCode());
+}
+
+async function switchToAutofix() {
+  viewMode.value = 1;
+  await sleep(100);
+  editor_view.value.setCode(currentProblem.value[0].fixedCode);
+}
+
+async function switchToDiff() {
+  viewMode.value = 2;
+  await sleep(100);
+  editor_diff.value.setCode(getOriginalCode(), currentProblem.value[0].fixedCode);
+}
 
 </script>
 
@@ -79,40 +105,52 @@ onMounted(() => {
           <p class="text-large dark">
             {{currentProblem[0].problemDesc}}
           </p>
-          <p class="h4">🛠️Fix</p>
-          <p class="text-large dark">
-            {{currentProblem[0].fixedCode}}
-          </p>
+<!--          <p class="h4">🛠️Fix</p>-->
+<!--          <p class="text-large dark">-->
+<!--            {{currentProblem[0].fixedCode}}-->
+<!--          </p>-->
         </div>
         <div style="position: sticky; bottom: 0; height: 10%">
-          <div class="toggle-btns">
-            <v-fab variant="text" size="24px">
+          <v-btn-toggle v-model="viewMode" class="toggle-btns" density="comfortable">
+            <v-btn variant="text" size="30px" value="0" @click="switchToOriginal">
               <v-icon size="24px">mdi-replay</v-icon>
-              <v-tooltip activator="parent" location="bottom">Reset to Original</v-tooltip>
-            </v-fab>
-            <v-fab variant="text" size="24px">
+              <v-tooltip activator="parent" location="top">Original</v-tooltip>
+            </v-btn>
+            <v-btn variant="text" size="30px" value="1" @click="switchToAutofix">
               <v-icon size="24px">mdi-auto-fix</v-icon>
-              <v-tooltip activator="parent" location="bottom">Reset to Autofix</v-tooltip>
-            </v-fab>
-          </div>
-          <div class="fix-btn">
-            <v-btn variant="text" style="border-radius: 12px; background-color: #9baec8;">Push fix</v-btn>
-          </div>
+              <v-tooltip activator="parent" location="top">AI Fix</v-tooltip>
+            </v-btn>
+            <v-btn variant="text" size="30px" value="2" @click="switchToDiff">
+              <v-icon size="24px">mdi-code-tags</v-icon>
+              <v-tooltip activator="parent" location="top">Diff View</v-tooltip>
+            </v-btn>
+          </v-btn-toggle>
         </div>
       </div>
-      <v-divider thickness="5px" />
-
-      <div class="editor-fix">
-        <FixEditor style="height: 100%" ref="editor_fix"/>
+      <div class="editor-view">
+        <CodeBlock
+          v-if="viewMode != 2"
+          style="height: 100%"
+          :language="currentProblem[0].language"
+          ref="editor_view"
+          />
+        <DiffEditor
+          v-else
+          style="height: 100%"
+          :original-code="getOriginalCode()"
+          :fixed-code="currentProblem[0].fixedCode"
+          :language="currentProblem[0].language"
+          ref="editor_diff"
+        />
       </div>
     </div>
 
     <div class="preview-wrapper">
-      <p class="h3 dark" style="height: 4vh">Preview✨</p>
-      <CodeBlock style="height: 84vh" class="editor-view" ref="editor_view"/>
+      <p class="h3 dark" style="height: 4vh">✨Editor</p>
+      <Editor style="height: 84vh" class="editor-fix" ref="editor_fix"/>
     </div>
 
-    <v-btn class="continue-wrapper" @click="">
+    <v-btn class="continue-wrapper" @click="router.push('/reviewer')">
       <p>Continue Review</p>
       <v-icon size="24px" icon="mdi-chevron-right"/>
     </v-btn>
@@ -131,6 +169,9 @@ onMounted(() => {
 .editor-view {
   border-radius: 30px;
   backdrop-filter: blur(20px);
+
+  width: auto;
+  height: 48vh;
 
   overflow: hidden;
 
@@ -174,8 +215,8 @@ onMounted(() => {
   position: absolute;
   left: 1vw;
 
-  width: 100px;
-  height: 35px;
+  width: 150px;
+  height: 55px;
 
   background-color: #f1f1f1;
   border-radius: 12px;
@@ -184,7 +225,6 @@ onMounted(() => {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  padding-left: 20px;
 }
 
 .fix-btn {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as monaco from "monaco-editor";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {ref, onMounted, toRaw, watch} from "vue";
 import {tr} from "vuetify/locale";
 
