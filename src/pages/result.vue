@@ -7,6 +7,7 @@ import Editor from "@/components/Editor.vue";
 import DiffEditor from "@/components/DiffEditor.vue";
 import {sleep} from "openai/core";
 import router from "@/router";
+import {Tour, type TourStep} from "vue3-quick-tour";
 
 const editor_view = ref();
 const editor_fix = ref();
@@ -39,6 +40,7 @@ onMounted(() => {
       editor_diff.value.setCode(getOriginalCode(), currentProblem.value[0].fixedCode);
     }
   })
+  handleOpenTour();
 })
 
 function getOriginalCode() {
@@ -63,11 +65,74 @@ async function switchToDiff() {
   editor_diff.value.setCode(getOriginalCode(), currentProblem.value[0].fixedCode);
 }
 
+const tourSteps: TourStep[] = [
+  {
+    el: () => document.getElementById("problem-drawer") as HTMLElement,
+    title: "Problem List",
+    message: "Here is a list of problems that AI has found in your code. Click on one to see more details.",
+    placement: "right"
+  },
+  {
+    el: () => document.getElementById("view-mode-toggle") as HTMLElement,
+    title: "View Mode",
+    message: "You can switch between the original code, AI fixed code, and a diff view.",
+    placement: "right"
+  },
+  {
+    el: () => document.getElementById("editor-view") as HTMLElement,
+    title: "Code View",
+    message: "You can see the code here and switch between different views.",
+    placement: "right"
+  },
+  {
+    el: () => document.getElementById("editor-fix") as HTMLElement,
+    title: "Editor",
+    message: "You can edit your code here and see the changes in real-time.",
+    placement: "left"
+  },
+  {
+    el: () => document.getElementById("continue-btn") as HTMLElement,
+    title: "Continue",
+    message: "Click here to continue reviewing your code.",
+    placement: "top"
+  }
+]
+const buttonText = {
+  finish: {
+    text: "Got it!"
+  },
+  prev: {
+    text: "Prev"
+  },
+  next: {
+    text: "Next"
+  }
+}
+const showTour = ref(false);
+const currentStep = ref(0);
+
+function handleOpenTour() {
+  let show = sessionStorage.getItem("showTour");
+  if (!show) {
+    showTour.value = true;
+    sessionStorage.setItem("showTour", "true");
+  }
+}
+
 </script>
 
 <template>
   <div>
+    <Tour
+      :steps="tourSteps"
+      mask
+      arrow
+      v-model:show="showTour"
+      v-model:currentStep="currentStep"
+      :button-props="buttonText"
+    />
     <v-navigation-drawer
+      id="problem-drawer"
       expand-on-hover
       rail
       color="#f1f1f166"
@@ -111,7 +176,7 @@ async function switchToDiff() {
 <!--          </p>-->
         </div>
         <div style="position: sticky; bottom: 0; height: 10%">
-          <v-btn-toggle v-model="viewMode" class="toggle-btns" density="comfortable">
+          <v-btn-toggle v-model="viewMode" class="toggle-btns" density="comfortable" id="view-mode-toggle">
             <v-btn variant="text" size="30px" value="0" @click="switchToOriginal">
               <v-icon size="24px">mdi-replay</v-icon>
               <v-tooltip activator="parent" location="top">Original</v-tooltip>
@@ -127,7 +192,7 @@ async function switchToDiff() {
           </v-btn-toggle>
         </div>
       </div>
-      <div class="editor-view">
+      <div class="editor-view" id="editor-view">
         <CodeBlock
           v-if="viewMode != 2"
           style="height: 100%"
@@ -145,12 +210,12 @@ async function switchToDiff() {
       </div>
     </div>
 
-    <div class="preview-wrapper">
+    <div class="preview-wrapper" id="editor-fix">
       <p class="h3 dark" style="height: 4vh">✨Editor</p>
       <Editor style="height: 84vh" class="editor-fix" ref="editor_fix"/>
     </div>
 
-    <v-btn class="continue-wrapper" @click="router.push('/reviewer')">
+    <v-btn class="continue-wrapper" @click="router.push('/reviewer')" id="continue-btn">
       <p>Continue Review</p>
       <v-icon size="24px" icon="mdi-chevron-right"/>
     </v-btn>
