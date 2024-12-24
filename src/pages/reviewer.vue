@@ -36,9 +36,13 @@ const toResult = async () => {
       <v-row>
         <div style="display: flex">
           <p class="h2 dark text-title">Overall Presets</p>
-          <button class="info-button">
-            <v-icon size="15px" icon="mdi-information-outline"/>
-          </button>
+          <v-tooltip text="Choose a preset to quickly configure the code review.">
+            <template #activator="{ props }">
+              <button class="info-button" v-bind="props">
+                <v-icon size="15px" icon="mdi-information-outline"/>
+              </button>
+            </template>
+          </v-tooltip>
         </div>
         <v-divider class="divider"/>
         <v-btn-toggle class="btn-group" v-model="preset" group color="var(--gray)">
@@ -51,9 +55,13 @@ const toResult = async () => {
       <v-row style="margin-top: 30px">
         <div style="display: flex">
           <p class="h2 dark text-title">Config</p>
-          <button class="info-button">
-            <v-icon size="15px" icon="mdi-information-outline"/>
-          </button>
+          <v-tooltip text="Select the configurations you want to apply to the code review.">
+            <template #activator="{ props }">
+              <button class="info-button" v-bind="props">
+                <v-icon size="15px" icon="mdi-information-outline"/>
+              </button>
+            </template>
+          </v-tooltip>
         </div>
         <v-divider class="divider"/>
       </v-row>

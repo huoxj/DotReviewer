@@ -26,7 +26,7 @@
         <v-col cols="9" class="content-col" @scroll="onScroll">
           <div ref="overview" class="content-section">
             <h2>Overview</h2>
-            <p>AI Code Review Tool 是一个基于人工智能的代码检查工具，通过集成聊天功能与代码分析引擎，提供智能化的代码质量检测和优化建议。</p>
+            <p>Dot Reviewer 是一个基于人工智能的代码检查工具，通过集成聊天功能与代码分析引擎，提供智能化的代码质量检测和优化建议。</p>
             <h3>Features</h3>
             <ul>
               <li>多语言支持：支持 C++、Python、Java等主流编程语言。</li>

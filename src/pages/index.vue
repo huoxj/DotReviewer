@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import router from "@/router";
 
+import * as mdiIcons from "@mdi/js";
+
+console.log("mdiFormatTitle" in mdiIcons);
+
 function toReviewer() {
   router.push("/reviewer");
 }

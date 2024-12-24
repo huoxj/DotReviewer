@@ -8,6 +8,7 @@ import DiffEditor from "@/components/DiffEditor.vue";
 import {sleep} from "openai/core";
 import router from "@/router";
 import {Tour, type TourStep} from "vue3-quick-tour";
+import * as mdiIcons from "@mdi/js";
 
 const editor_view = ref();
 const editor_fix = ref();
@@ -28,10 +29,20 @@ function initEditorCode() {
   editor_fix.value.setLanguage(currentProblem.value[0].language);
 }
 
+function processReviewResult() {
+  reviewResult.value.forEach((item) => {
+    let iconName = item.problemIcon?.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+    if (!iconName || !(iconName in mdiIcons)) {
+      item.problemIcon = "mdi-alert-circle-outline";
+    }
+  })
+}
+
 const viewMode = ref(1);
 
 onMounted(() => {
   initEditorCode();
+  processReviewResult();
   watch(currentProblem, () => {
     if (viewMode.value != 2 && editor_view.value) {
       editor_view.value.setCode(currentProblem.value[0].fixedCode);
